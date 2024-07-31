@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
-import mockData from './mockData'; // Adjust the path as needed
+import mockData from './mockData'; 
 
 describe("<App /> test", () => {
     beforeEach(() => {
