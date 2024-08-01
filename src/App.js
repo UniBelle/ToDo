@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import TodoList from './components/TodoList/TodoList'
+import TodoList from './components/TodoList/TodoList';
 import './App.css';
 
 function App() {
@@ -29,7 +29,8 @@ function App() {
       .then((result) => {
         setSaving(false);
         setTodos(todos.concat({ ...result, id: value.id }));
-      })
+        setNewTodo('');
+      });
   }
 
   function onChange(e) {
@@ -38,7 +39,7 @@ function App() {
   }
 
   function removeTodo(id) {
-    setTodos(todos.filter(t => t.id !== id))
+    setTodos(todos.filter(t => t.id !== id));
   }
 
   function updateTodo(id) {
@@ -48,8 +49,18 @@ function App() {
         return updatedItem;
       }
       return todoItem;
-    })
+    });
     setTodos(newList);
+  }
+
+  function editTodo(id, newTitle) {
+    const updatedTodos = todos.map(todoItem => {
+      if (todoItem.id === id) {
+        return { ...todoItem, title: newTitle };
+      }
+      return todoItem;
+    });
+    setTodos(updatedTodos);
   }
 
   useEffect(() => {
@@ -67,12 +78,19 @@ function App() {
   return (
     <div className="App">
       <h1 className='header'>My todo list</h1>
-      {loading ? "Loading" : <TodoList todos={todos} removeHandler={removeTodo} updateTodo={updateTodo} />}
+      {loading ? "Loading" : (
+        <TodoList
+          todos={todos}
+          removeHandler={removeTodo}
+          updateTodo={updateTodo}
+          editTodo={editTodo}
+        />
+      )}
 
       <div className='add-todo-form'>
         {saving ? "Saving" : (
           <form onSubmit={addTodo}>
-            <input type="text" onChange={onChange} />
+            <input type="text" onChange={onChange} value={newTodo} />
             <button type='submit'>Add new todo</button>
           </form>
         )}

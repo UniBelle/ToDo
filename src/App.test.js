@@ -20,6 +20,8 @@ describe("<App /> test", () => {
         jest.restoreAllMocks();
     });
 
+
+
     it("should render <App /> component", async () => {
         global.fetch.mockResolvedValueOnce({
             ok: true,
@@ -70,5 +72,56 @@ describe("<App /> test", () => {
 
         });
     });
-    //todo: test to check if it cross out when completed
+    it("crosses out a todo item when completed", async () => {
+        render(<App />);
+        const todoItemText = /Take out the trash/i;
+
+        await screen.findByText(todoItemText);
+
+        const checkbox = screen.getByTestId('checkbox-1');
+        userEvent.click(checkbox);
+
+        await waitFor(() => expect(checkbox).toBeChecked());
+
+        const todoItem = screen.getByText(todoItemText);
+        expect(todoItem).toHaveClass('completed');
+
+
+    });
+    test('edits a todo item', async () => {
+        render(<App />);
+
+        const initialText = await screen.findByText('Take out the trash');
+        expect(initialText).toBeInTheDocument();
+
+        const editButton = screen.getByTestId('edit-btn-1');
+        expect(editButton).toBeInTheDocument();
+        userEvent.click(editButton);
+
+        const inputField = await screen.findByRole('textbox');
+        expect(inputField).toBeInTheDocument();
+
+        userEvent.clear(inputField);
+        userEvent.type(inputField, 'Take out the recycling');
+
+        const submitButton = screen.getByText('Add new todo');
+
+        expect(submitButton).toBeInTheDocument();
+        userEvent.click(submitButton);
+
+        await waitFor(() => {
+            expect(screen.queryByText('Take out the trash')).not.toBeInTheDocument();
+        });
+
+
+    });
+
+
+
 });
+
+
+
+
+
+
