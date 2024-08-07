@@ -1,15 +1,41 @@
 import React, { useState } from 'react';
-import styles from './TodoItem.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+const styles = require('../TodoItem/TodoItem.module.css');
 
-const TodoItem = ({ todo, removeHandler, updateTodo, editTodo }) => {
+
+export interface todo {
+    userId: number;
+    id: number;
+    title: string;
+    completed: boolean;
+};
+export interface TodoItemProps {
+    todo: todo;
+    removeTodo: (id: number) => void;
+    updateTodo: (id: number) => string;
+    editTodo: (id: number, title: string) => string;
+}
+
+
+
+const TodoItem = ({ todo, removeTodo, updateTodo, editTodo }: TodoItemProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedText, setEditedText] = useState(todo.title);
 
     const handleSaveEdit = () => {
         editTodo(todo.id, editedText);
+        setEditedText(todo.title);
         setIsEditing(false);
+    };
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEditedText(e.target.value);
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleSaveEdit();
+        }
     };
 
     return (
@@ -26,13 +52,9 @@ const TodoItem = ({ todo, removeHandler, updateTodo, editTodo }) => {
                     <input
                         type="text"
                         value={editedText}
-                        onChange={(e) => setEditedText(e.target.value)}
+                        onChange={handleTextChange}
                         onBlur={handleSaveEdit}
-                        onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-                                handleSaveEdit();
-                            }
-                        }}
+                        onKeyPress={handleKeyPress}
                         aria-label="Edit todo"
                     />
                 ) : (
@@ -48,7 +70,7 @@ const TodoItem = ({ todo, removeHandler, updateTodo, editTodo }) => {
             <button
                 className={styles.closeBtn}
                 data-testid={`close-btn-${todo.id}`}
-                onClick={() => removeHandler(todo.id)}
+                onClick={() => removeTodo(todo.id)}
             >
                 X
             </button>
@@ -64,5 +86,6 @@ const TodoItem = ({ todo, removeHandler, updateTodo, editTodo }) => {
         </div>
     );
 };
+
 
 export default TodoItem;

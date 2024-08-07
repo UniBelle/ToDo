@@ -1,4 +1,6 @@
-const mockData = [
+import { todo } from "./components/TodoItem/TodoItem";
+
+const mockData: todo[] = [
     {
         userId: 1,
         id: 1,
@@ -6,7 +8,7 @@ const mockData = [
         completed: false
     },
     {
-        userId: 1,
+        userId: 2,
         id: 2,
         title: "Do laundry",
         completed: false

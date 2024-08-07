@@ -6,14 +6,12 @@ import mockData from './mockData';
 
 describe("<App /> test", () => {
     beforeEach(() => {
-        global.fetch = jest.fn(() =>
-            Promise.resolve({
-                json: () => Promise.resolve([
-                    { id: 1, title: "Take out the trash", completed: false },
-                    { id: 2, title: "Do the dishes", completed: false },
-                ]),
-            })
-        );
+        global.fetch = jest.fn().mockResolvedValue({
+            json: () => Promise.resolve([
+                { id: 1, title: "Take out the trash", completed: false },
+                { id: 2, title: "Do the dishes", completed: false },
+            ]),
+        }) as jest.MockedFunction<typeof fetch>;
     });
 
     afterEach(() => {
@@ -23,7 +21,7 @@ describe("<App /> test", () => {
 
 
     it("should render <App /> component", async () => {
-        global.fetch.mockResolvedValueOnce({
+        (global.fetch as jest.Mock).mockResolvedValueOnce({
             ok: true,
             json: async () => mockData,
         });
@@ -42,11 +40,10 @@ describe("<App /> test", () => {
             completed: false,
         };
 
-        global.fetch
-            .mockResolvedValueOnce({
-                ok: true,
-                json: async () => mockData,
-            })
+        (global.fetch as jest.Mock).mockResolvedValueOnce({
+            ok: true,
+            json: async () => mockData,
+        })
             .mockResolvedValueOnce({
                 ok: true,
                 json: async () => newTodo,
